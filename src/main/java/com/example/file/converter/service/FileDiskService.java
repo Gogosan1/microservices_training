@@ -3,8 +3,6 @@ package com.example.file.converter.service;
 import com.example.file.converter.repository.storage.MinioStorage;
 import com.example.file.converter.util.exceptions.ProcessingErrorCode;
 import com.example.file.converter.util.exceptions.RetryableProcessingException;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
