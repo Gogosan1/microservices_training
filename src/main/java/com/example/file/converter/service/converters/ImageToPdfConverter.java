@@ -1,6 +1,6 @@
 package com.example.file.converter.service.converters;
 
-import com.example.file.converter.entity.ConversionResult;
+import com.example.file.converter.entity.ConversionResultMetadata;
 import com.example.file.converter.util.exceptions.InvalidFileContentException;
 import com.example.file.converter.util.exceptions.ProcessingErrorCode;
 import com.example.file.converter.util.exceptions.RetryableProcessingException;
@@ -20,7 +20,7 @@ public class ImageToPdfConverter implements ConverterStrategy {
     private static final List<String> AVAILABLE_IMAGE_TYPES = List.of("image/jpeg", "image/png");
 
     @Override
-    public ConversionResult convert(File sourceImageFile, File targetPdfFile) {
+    public ConversionResultMetadata convert(File sourceImageFile, File targetPdfFile) {
 
         final Image image;
         try {
@@ -46,7 +46,7 @@ public class ImageToPdfConverter implements ConverterStrategy {
             document.add(image);
             document.close();
 
-            return new ConversionResult(targetPdfFile, "application/pdf", ".pdf");
+            return new ConversionResultMetadata("application/pdf", ".pdf");
         } catch (Exception exception) {
             if (document.isOpen()) {
                 try {

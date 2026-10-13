@@ -1,6 +1,6 @@
 package com.example.file.converter.service.converters;
 
-import com.example.file.converter.entity.ConversionResult;
+import com.example.file.converter.entity.ConversionResultMetadata;
 import com.example.file.converter.service.ConverterService;
 import com.example.file.converter.util.exceptions.InvalidFileContentException;
 import com.example.file.converter.util.exceptions.PermanentProcessingException;
@@ -28,7 +28,7 @@ public class ZipToPdfZipConverter implements ConverterStrategy {
     private final ObjectProvider<ConverterService> converterService;
 
     @Override
-    public ConversionResult convert(File sourceZipFile, File resultZipFile) {
+    public ConversionResultMetadata convert(File sourceZipFile, File resultZipFile) {
 
         try (ZipFile zipFile = new ZipFile(sourceZipFile);
              FileOutputStream fileOutputStream = new FileOutputStream(resultZipFile);
@@ -46,7 +46,7 @@ public class ZipToPdfZipConverter implements ConverterStrategy {
             }
 
             zipOutputStream.finish();
-            return new ConversionResult(resultZipFile, "application/zip", ".zip");
+            return new ConversionResultMetadata("application/zip", ".zip");
 
         } catch (PermanentProcessingException | RetryableProcessingException exception) {
             throw exception;
@@ -67,7 +67,7 @@ public class ZipToPdfZipConverter implements ConverterStrategy {
     private void processSingleZipEntry(ZipFile zipFile, ZipEntry entry, ZipOutputStream zipOutputStream) {
         File entrySourceFile = null;
         File entryTargetFile = null;
-        ConversionResult entryResult = null;
+        ConversionResultMetadata entryResult = null;
 
         try {
             entrySourceFile = extractZipEntryToFile(zipFile, entry);
@@ -75,7 +75,7 @@ public class ZipToPdfZipConverter implements ConverterStrategy {
             entryResult = converterService.getObject().convert(entrySourceFile, entryTargetFile);
 
             String resultEntryName = replaceExtension(entry.getName(), entryResult.extension());
-            writeConvertedFileToZip(zipOutputStream, entryResult.file(), resultEntryName);
+            writeConvertedFileToZip(zipOutputStream, entryTargetFile, resultEntryName);
 
         } finally {
             cleanUpTempFile(entrySourceFile);

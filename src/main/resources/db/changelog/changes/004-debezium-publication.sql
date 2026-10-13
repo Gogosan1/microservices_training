@@ -1,4 +1,3 @@
-/*
 --liquibase formatted sql
 
 --changeset file-converter:003-debezium-connect-grant splitStatements:false
@@ -39,4 +38,4 @@ BEGIN
              ADD TABLE converter.outbox';
     END IF;
 END
-$$;*/
+$$;

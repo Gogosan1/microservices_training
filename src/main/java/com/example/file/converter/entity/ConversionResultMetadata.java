@@ -2,8 +2,7 @@ package com.example.file.converter.entity;
 
 import java.io.File;
 
-public record ConversionResult(
-        File file,
+public record ConversionResultMetadata(
         String contentType,
         String extension
 ) {

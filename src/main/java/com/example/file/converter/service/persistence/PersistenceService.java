@@ -14,7 +14,7 @@ public class PersistenceService {
     private final InboxService inboxService;
     private final OutboxService outboxService;
 
-    public boolean tryStartProcessing(UUID eventId) {
+    public boolean tryRegisterInInbox(UUID eventId) {
         return inboxService.tryStartProcessing(eventId);
     }
 
@@ -26,7 +26,7 @@ public class PersistenceService {
     }
 
     @Transactional
-    public void failure(UUID eventId, PermanentProcessingException exception) {
+    public void markAsPermanentFailure(UUID eventId, PermanentProcessingException exception) {
 
         inboxService.markFailure(eventId);
         outboxService.saveFailureEvent(eventId, exception);

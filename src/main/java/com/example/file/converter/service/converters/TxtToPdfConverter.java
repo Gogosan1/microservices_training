@@ -1,6 +1,6 @@
 package com.example.file.converter.service.converters;
 
-import com.example.file.converter.entity.ConversionResult;
+import com.example.file.converter.entity.ConversionResultMetadata;
 import com.example.file.converter.util.exceptions.ProcessingErrorCode;
 import com.example.file.converter.util.exceptions.RetryableProcessingException;
 import org.openpdf.text.Document;
@@ -36,7 +36,7 @@ public class TxtToPdfConverter implements ConverterStrategy {
     }
 
     @Override
-    public ConversionResult convert(File sourceTxtFile, File targetPdfFile) {
+    public ConversionResultMetadata convert(File sourceTxtFile, File targetPdfFile) {
 
         Document document = new Document();
 
@@ -54,7 +54,7 @@ public class TxtToPdfConverter implements ConverterStrategy {
 
             document.close();
 
-            return new ConversionResult(targetPdfFile, "application/pdf", ".pdf");
+            return new ConversionResultMetadata("application/pdf", ".pdf");
         } catch (Exception exception) {
             if (document.isOpen()) {
                 try {

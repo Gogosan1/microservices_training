@@ -1,7 +1,7 @@
 package com.example.file.converter.service;
 
 
-import com.example.file.converter.entity.ConversionResult;
+import com.example.file.converter.entity.ConversionResultMetadata;
 import com.example.file.converter.service.converters.ConverterStrategy;
 import com.example.file.converter.util.exceptions.UnsupportedFileTypeException;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ public class ConverterService {
     private final List<ConverterStrategy> converterStrategyList;
     private final Tika tika;
 
-    public ConversionResult convert(File sourceFile, File targetFile) {
+    public ConversionResultMetadata convert(File sourceFile, File targetFile) {
 
         try {
             String fileType = tika.detect(sourceFile);
