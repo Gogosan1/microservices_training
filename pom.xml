@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>ru.zelenev</groupId>
-    <artifactId>file.converter</artifactId>
+    <artifactId>pdf.converter</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>file.converter</name>
     <description>Spring Boot project</description>
