@@ -31,7 +31,7 @@ import java.util.zip.ZipFile;
 @Slf4j
 @Component("ZIP")
 @RequiredArgsConstructor
-public class ZipToPdfZipConverter implements ConverterStrategy {
+public class ZipToPdfConverter implements ConverterStrategy {
 
     private static final String AVAILABLE_FILE_TYPE = "application/zip";
 
