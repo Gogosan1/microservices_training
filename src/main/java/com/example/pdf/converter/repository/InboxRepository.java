@@ -35,12 +35,13 @@ public interface InboxRepository extends JpaRepository<Inbox, UUID> {
                    @Param("now") OffsetDateTime now);
 
 
+    @Modifying
     @Query("""
             UPDATE Inbox i 
-            SET i.status = ::newStatus,
-                i.processedAtTime = ::processedAt
-            WHERE i.eventId = ::eventId
-            AND i.status = ::expectedStatus
+            SET i.status = :newStatus,
+                i.processedAtTime = :processedAt
+            WHERE i.eventId = :eventId
+            AND i.status = :expectedStatus
             """)
     int updateStatus(
             @Param("eventId") UUID eventId,

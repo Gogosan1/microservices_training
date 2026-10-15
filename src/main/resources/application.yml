@@ -32,7 +32,8 @@ spring:
     input-topic: ${KAFKA_INPUT_TOPIC:files-uploaded}
 
     listener:
-      ack-mode: manual_immediate
+      ack-mode: record
+
     consumer:
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JacksonJsonDeserializer
@@ -42,8 +43,8 @@ spring:
       auto-offset-reset: earliest # используется при падении offset-а
 
       properties:
-        "[spring.json.value.default.type]": "com.example.file.converter.event.FileUploadedEvent"
-        "[spring.json.trusted.packages]": "com.example.file.converter.event"
+        "[spring.json.value.default.type]": "com.example.pdf.converter.event.FileUploadedEvent"
+        "[spring.json.trusted.packages]": "com.example.pdf.converter.event"
         "[spring.json.use.type.headers]": false
 
 

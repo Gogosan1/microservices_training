@@ -1,6 +1,7 @@
 package com.example.pdf.converter.service;
 
 import com.example.pdf.converter.entity.ConversionResultMetadata;
+import com.example.pdf.converter.entity.enums.ProcessingErrorCode;
 import com.example.pdf.converter.event.FileUploadedEvent;
 import com.example.pdf.converter.infrastructure.storage.MinioStorage;
 import com.example.pdf.converter.service.persistence.PersistenceService;
@@ -27,6 +28,13 @@ public class DocumentManagementFacade {
     // TODO: внутренняя логика ретраев для зависших в PROCESSING событий пока отсутствует
     // TODO: сделать сервис обработчик асинхронным и сделать пул потоков для обработки
     public void handle(FileUploadedEvent event) {
+
+        validateEvent(event);
+
+        if (!persistenceService.tryRegisterInInbox(event.id())) {
+            log.warn("Событие: {} с таким ID:{} уже есть!", event, event.id());
+            return;
+        }
 
         File initialTempFile = null;
         File outputTempFile = null;
@@ -58,6 +66,11 @@ public class DocumentManagementFacade {
         } catch (Exception exception) {
             log.error("Непредвиденная ошибка при обработке файла; требуется повторная попытка", exception);
             persistenceService.releaseForRetry(event.id());
+            throw new  RetryableProcessingException(
+                    ProcessingErrorCode.INTERNAL_ERROR,
+                    "Внутренняя ошибка при обработке файла; требуется повторная попытка",
+                    exception
+            );
 
         } finally {
             fileDiskService.cleanUpTempFile(initialTempFile);
