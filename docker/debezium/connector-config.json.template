@@ -1,0 +1,30 @@
+{
+  "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
+  "tasks.max": "1",
+
+  "database.hostname": "${DEBEZIUM_DB_HOST}",
+  "database.port": "${DEBEZIUM_DB_PORT}",
+  "database.user": "${DEBEZIUM_DB_USER}",
+  "database.password": "${DEBEZIUM_PASSWORD}",
+  "database.dbname": "${DEBEZIUM_DB_NAME}",
+
+  "topic.prefix": "${DEBEZIUM_TOPIC_PREFIX}",
+  "plugin.name": "pgoutput",
+  "slot.name": "file_converter_outbox_slot",
+  "publication.name": "file_converter_publication",
+  "publication.autocreate.mode": "disabled",
+
+  "schema.include.list": "converter",
+  "table.include.list": "converter.outbox",
+  "snapshot.mode": "no_data",
+
+  "transforms": "outbox",
+  "transforms.outbox.type": "io.debezium.transforms.outbox.EventRouter",
+  "transforms.outbox.table.field.event.id": "id",
+  "transforms.outbox.table.field.event.key": "aggregate_id",
+  "transforms.outbox.table.field.event.type": "event_type",
+  "transforms.outbox.table.field.event.payload": "payload",
+  "transforms.outbox.route.by.field": "aggregate_type",
+  "transforms.outbox.route.topic.replacement": "${OUTBOX_TOPIC_PREFIX}.${routedByValue}",
+  "transforms.outbox.table.expand.json.payload": "true"
+}
