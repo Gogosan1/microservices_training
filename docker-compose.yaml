@@ -25,6 +25,8 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
+    networks:
+      - internal-bridge
 
   kafka:
     image: confluentinc/cp-kafka:8.1.0
@@ -56,6 +58,8 @@ services:
       timeout: 5s
       retries: 20
       start_period: 10s
+    networks:
+      - internal-bridge
 
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
@@ -70,6 +74,8 @@ services:
       KAFKA_CLUSTERS_0_NAME: local
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: ${KAFKA_INTERNAL_BOOTSTRAP_SERVERS:-kafka-0:9091}
       DYNAMIC_CONFIG_ENABLED: "true"
+    networks:
+      - internal-bridge
 
   minio:
     image: minio/minio:latest
@@ -89,16 +95,18 @@ services:
       timeout: 5s
       retries: 10
       start_period: 10s
+    networks:
+      - internal-bridge
 
-  app:
+  pdf-converter:
     build:
       context: .
       dockerfile: Dockerfile
     environment:
       DB_HOST: postgres
       DB_PORT: 5432
-      DB_NAME: ${POSTGRES_DB:-file_converter}
-      DB_USER: ${POSTGRES_USER:-file_converter}
+      DB_NAME: ${POSTGRES_DB:-pdf_converter}
+      DB_USER: ${POSTGRES_USER:-pdf_converter}
       DB_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
       KAFKA_BOOTSTRAP_SERVERS: ${KAFKA_INTERNAL_BOOTSTRAP_SERVERS:-kafka-0:9091}
       KAFKA_INPUT_TOPIC: ${KAFKA_INPUT_TOPIC:-files-uploaded}
@@ -106,6 +114,7 @@ services:
       MINIO_ACCESS_KEY: ${MINIO_ROOT_USER:-minioadmin}
       MINIO_SECRET_KEY: ${MINIO_ROOT_PASSWORD:-minioadmin}
       MINIO_BUCKET: ${MINIO_BUCKET:-attachments}
+      EUREKA_ENDPOINT: ${EUREKA_ENDPOINT:-http://discovery-service:8761/eureka}
     depends_on:
       postgres:
         condition: service_healthy
@@ -113,6 +122,8 @@ services:
         condition: service_healthy
       minio:
         condition: service_healthy
+    networks:
+      - internal-bridge
 
   debezium:
     image: ${DEBEZIUM_CONNECT_IMAGE:-quay.io/debezium/connect:3.5.2.Final}
@@ -137,6 +148,8 @@ services:
       KEY_CONVERTER: org.apache.kafka.connect.storage.StringConverter
       VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
       VALUE_CONVERTER_SCHEMAS_ENABLE: "false"
+    networks:
+      - internal-bridge
 
   debezium-init:
     build:
@@ -147,7 +160,7 @@ services:
     depends_on:
       debezium:
         condition: service_started
-      app:
+      pdf-converter:
         condition: service_started
     environment:
       DEBEZIUM_CONNECT_URL: http://debezium:8083
@@ -160,8 +173,16 @@ services:
       OUTBOX_TOPIC_PREFIX: ${OUTBOX_TOPIC_PREFIX:-pdf-converter}
     volumes:
       - ./docker/debezium:/config:ro
+    networks:
+      - internal-bridge
 
 volumes:
   postgres-data:
   kafka-data:
   minio-data:
+
+
+networks:
+  internal-bridge:
+    name: microservices-training-net
+    external: true
