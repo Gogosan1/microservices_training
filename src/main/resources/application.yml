@@ -1,11 +1,11 @@
 spring:
   application:
-    name: file-converter
+    name: pdf-converter
 
   datasource:
-    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:file_converter}
-    username: ${DB_USER:file_converter}
-    password: ${DB_PASSWORD:file_converter}
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:pdf_converter}
+    username: ${DB_USER:pdf_converter}
+    password: ${DB_PASSWORD:pdf_converter}
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -47,6 +47,10 @@ spring:
         "[spring.json.trusted.packages]": "com.example.pdf.converter.event"
         "[spring.json.use.type.headers]": false
 
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_ENDPOINT:http://localhost:8761/eureka}
 
 minio:
   endpoint: ${MINIO_ENDPOINT:http://localhost:9000}

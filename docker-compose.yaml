@@ -3,8 +3,8 @@ services:
     image: postgres:17
     container_name: file-converter-postgres
     environment:
-      POSTGRES_DB: ${POSTGRES_DB:-file_converter}
-      POSTGRES_USER: ${POSTGRES_USER:-file_converter}
+      POSTGRES_DB: ${POSTGRES_DB:-pdf_converter}
+      POSTGRES_USER: ${POSTGRES_USER:-pdf_converter}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
       DEBEZIUM_PASSWORD: ${DEBEZIUM_PASSWORD:?Set DEBEZIUM_PASSWORD in .env}
     ports:
@@ -153,11 +153,11 @@ services:
       DEBEZIUM_CONNECT_URL: http://debezium:8083
       DEBEZIUM_DB_HOST: postgres
       DEBEZIUM_DB_PORT: 5432
-      DEBEZIUM_DB_NAME: ${POSTGRES_DB:-file_converter}
+      DEBEZIUM_DB_NAME: ${POSTGRES_DB:-pdf_converter}
       DEBEZIUM_DB_USER: debezium
       DEBEZIUM_PASSWORD: ${DEBEZIUM_PASSWORD:?Set DEBEZIUM_PASSWORD in .env}
-      DEBEZIUM_TOPIC_PREFIX: ${DEBEZIUM_TOPIC_PREFIX:-file-converter-db}
-      OUTBOX_TOPIC_PREFIX: ${OUTBOX_TOPIC_PREFIX:-file-converter}
+      DEBEZIUM_TOPIC_PREFIX: ${DEBEZIUM_TOPIC_PREFIX:-pdf-converter-db}
+      OUTBOX_TOPIC_PREFIX: ${OUTBOX_TOPIC_PREFIX:-pdf-converter}
     volumes:
       - ./docker/debezium:/config:ro
 
